@@ -13,10 +13,10 @@ from  utils.images import get_person_name
 
 
 class Fingerprint:
-    def __new__(cls):
+    def __new__(cls,on_detected=lambda x: None):
         if not hasattr(cls, "instance"):
             cls.instance = super().__new__(cls)
-            cls.instance.__init()
+            cls.instance.__init(on_detected)
         return cls.instance
 
     @staticmethod
