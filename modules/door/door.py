@@ -4,13 +4,13 @@ import config
 from threading import Thread
 
 
-SERVO_PIN=config.SERVO_PIN
+LOCK_PIN=config.LOCK_PIN
 TRIG=config.TRIG
 ECHO=config.ECHO
 DOOR_DISTANCE = config.DOOR_DISTANCE
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(SERVO_PIN, GPIO.OUT)
+GPIO.setup(LOCK_PIN, GPIO.OUT)
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
 
@@ -26,39 +26,39 @@ class Door:
         return Door()
 
     def __init(self):
-        self.p = GPIO.PWM(SERVO_PIN, 50) # GPIO 17 for PWM with 50Hz
-        self.p.start(2.5) 
+        GPIO.output(LOCK_PIN, GPIO.LOW)
         self.curr_state = 'CLOSE'
         
-    def start_door_listner(self):
-        self.door_handler_thread = Thread(target=self.check_closed)
+    def start_door_listner(self,on_door_close=lambda x: None):
+        self.door_handler_thread = Thread(target=self.__check_close, args=(on_door_close,))
         self.door_handler_thread.daemon = True
         self.door_handler_thread.start()  
         
         
         
-    @staticmethod
-    def __angle(deg):
-        return  deg / 18 + 2
-
     def open(self):
         if self.curr_state == 'OPEN':
             return
-        self.curr_state = 'OPEN'
-        self.p.ChangeDutyCycle(Door.__angle(120))
+        self.curr_state = 'OPEN'        
+        GPIO.output(LOCK_PIN, GPIO.HIGH)
+        time.sleep(5)
+        self.close()
 
 
     def close(self):
         if self.curr_state == 'CLOSE':
             return
         self.curr_state = 'CLOSE'
-        self.p.ChangeDutyCycle(Door.__angle(180))
+        GPIO.output(LOCK_PIN, GPIO.LOW)
         
-    def __check_close(self):
+    def __check_close(self,on_door_close=lambda x: None):
         while True:
+            if self.curr_state == 'OPEN':
+                time.sleep(5)
             dist = Door.get_door_distance()
             if dist < DOOR_DISTANCE :
-                self.close_door()
+                on_door_close()
+                self.close()
             time.sleep(1)  # Delay between readings
             
     

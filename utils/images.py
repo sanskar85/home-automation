@@ -14,7 +14,7 @@ def list_uploaded_persons():
 
 def get_person_name(index:int):
     person_names = list_dirs()
-    return -1 if len(person_names) >= index else person_images[index]
+    return -1 if index >= len(person_names)  else person_names[index]
 
 
 def person_images(person_name):

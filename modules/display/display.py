@@ -18,11 +18,11 @@ BORDER = 5
 
 @dataclass
 class Message():
-    line1: str
-    line2: str
-    line3: str
-    line4: str
-    delay: int
+    line1: str = ""
+    line2: str = ""
+    line3: str = ""
+    line4: str = ""
+    delay: int = 1
     persist:bool = False
 
 
@@ -74,6 +74,8 @@ class Display:
         
     def __printDefault(self):
         dht = self.__getTemp()
+        if dht == None:
+            dht = (0,0)
         connected_wifi = self.__get_connected_wifi()
         msg = Message(f"Temperature :- {dht[0]}'C", f"Humidity :- {dht[1]}%","Wifi Status:", connected_wifi,1)
         self.__print(msg)

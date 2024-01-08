@@ -17,6 +17,9 @@ def on_face_detected(name:str):
     Display.get_instance().add_message(Message("Recognized", name,"Opening Gate",delay=2))
     Door.get_instance().open()
 
+def on_door_close():
+    Display.get_instance().add_message(Message("Door","Closed"))
+
 def encodings_callback(state, value):
     if state == "ENCODINGS":
         if value == True:
@@ -33,7 +36,7 @@ def encodings_callback(state, value):
 def start_server():
     Display.get_instance()
     Fingerprint.get_instance(on_face_detected).start_scanning()
-    Door.get_instance().start_door_listner()
+    Door.get_instance().start_door_listner(on_door_close)
     
     threading.Thread(target=recognizer.startRecognizer, args=(encodings_callback,on_face_detected)).start()
     uvicorn.run(app, host="0.0.0.0", port=8282)

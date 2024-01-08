@@ -1,13 +1,14 @@
 import time
-import adafruit_fingerprint
 import serial
 from threading import Thread, Event
 import sys
 import config
+import random
 
 sys.path.append(config.BASE_FOLDER)
 from modules import Display,Message
 from  utils.images import get_person_name
+import lib.adafruit_fingerprint as adafruit_fingerprint
 
 
 
@@ -34,15 +35,15 @@ class Fingerprint:
     
     def __scan_fingerprint(self)->int:
         while self.scanning.is_set():
-            if self.finger.get_image() != adafruit_fingerprint.OK:
-                continue
+            while self.finger.get_image() != adafruit_fingerprint.OK and self.scanning.is_set():
+                pass
             if self.finger.image_2_tz(1) != adafruit_fingerprint.OK:
                 continue
             if self.finger.finger_search() == adafruit_fingerprint.OK:
                 name = get_person_name(self.finger.finger_id)
-                if name != "Unknown":
+                if name != -1:
                     self.on_detected(name)
-                    time.sleep(3)
+            time.sleep(3)
         
 
     def start_scanning(self):
