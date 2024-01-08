@@ -1,11 +1,11 @@
 import threading
 import uvicorn
 from fastapi import FastAPI
-
+import time
 import config
 from api import routers
 from modules.face_recognizer import recognizer
-from modules import Display,Message,Fingerprint,Door
+from modules import Display,Message,Fingerprint,Door,Switch
 
 app = FastAPI()
 

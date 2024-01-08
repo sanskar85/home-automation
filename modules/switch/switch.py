@@ -29,13 +29,14 @@ class Switch:
         GPIO.output(LED_2, GPIO.LOW)
         GPIO.output(LED_3, GPIO.LOW)
         
-    def Switch_1(self,option="OFF"):      
-        GPIO.output(LED_1, GPIO.HIGH if option == "OFF" else GPIO.LOW)
+    def switch_1(self,option=False):      
+        print(option, GPIO.HIGH if option else GPIO.LOW)
+        GPIO.output(LED_1, GPIO.HIGH if option else GPIO.LOW)
         
-    def Switch_2(self,option="OFF"):      
-        GPIO.output(LED_2, GPIO.HIGH if option == "OFF" else GPIO.LOW)
+    def switch_2(self,option=False):      
+        GPIO.output(LED_2, GPIO.HIGH if option else GPIO.LOW)
         
-    def Switch_3(self,option="OFF"):      
-        GPIO.output(LED_3, GPIO.HIGH if option == "OFF" else GPIO.LOW)
+    def switch_3(self,option=False):      
+        GPIO.output(LED_3, GPIO.HIGH if option else GPIO.LOW)
         
         
